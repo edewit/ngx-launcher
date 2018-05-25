@@ -155,7 +155,7 @@ export class DependencyEditorCreateappStepComponent extends LauncherStep impleme
                 this.cacheInfo['runtime'] = {
                     name: current.name,
                     id: current.id,
-                    version: current.version.id
+                    version: current.version ? current.version.id : null
                 };
                 flag = true;
             }
