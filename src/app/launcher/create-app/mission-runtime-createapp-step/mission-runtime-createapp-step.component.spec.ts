@@ -12,10 +12,9 @@ import { LauncherComponent } from '../../launcher.component';
 import { LauncherStep } from '../../launcher-step';
 import { MissionRuntimeCreateappStepComponent } from './mission-runtime-createapp-step.component';
 import { MissionRuntimeService } from '../../service/mission-runtime.service';
-import { Broadcaster } from 'ngx-base';
+import { BroadcastService } from '../../service/broadcast.service';
 import { Mission } from '../../model/mission.model';
 import { Runtime } from '../../model/runtime.model';
-import { broadcaster } from '../../launcher.component.spec';
 import { TestMissionRuntimeService } from '../../service/mission-runtime.service.spec';
 
 export interface TypeWizardComponent {
@@ -77,9 +76,7 @@ describe('MissionRuntimeStepComponent', () => {
         {
           provide: LauncherComponent, useValue: mockWizardComponent
         },
-        {
-          provide: Broadcaster, useValue: broadcaster
-        },
+        BroadcastService,
         {
           provide: WindowRef, useValue: window
         }
@@ -322,4 +319,20 @@ describe('MissionRuntimeStepComponent', () => {
     let showMore = <HTMLAnchorElement>runtimesSection.querySelector('.description-more').children[0];
     expect(showMore.innerText.trim()).toBe('More');
   });
+
+  it('should complete step when booster is selected', fakeAsync(() => {
+    fixture.detectChanges();
+    expect(component.completed).toBeFalsy();
+    let missionsSection = element.querySelectorAll('.card-pf-body')[0];
+    let missionRadioBtn = <HTMLInputElement>missionsSection.querySelector('.list-group-item input[type="radio"]');
+    missionRadioBtn.click();
+    tick();
+    expect(component.completed).toBeFalsy();
+    let runtimesSection = element.querySelectorAll('.card-pf-body')[1];
+    let runtimeRadioBtn = <HTMLInputElement>runtimesSection.querySelector('.list-group-item input[type="radio"]');
+    runtimeRadioBtn.click();
+    tick();
+    fixture.detectChanges();
+    expect(component.completed).toBeTruthy();
+  }));
 });

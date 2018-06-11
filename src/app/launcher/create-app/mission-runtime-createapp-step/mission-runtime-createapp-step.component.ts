@@ -9,7 +9,7 @@ import { EmptyReason, MissionRuntimeService } from '../../service/mission-runtim
 import { LauncherComponent } from '../../launcher.component';
 import { LauncherStep } from '../../launcher-step';
 import { Booster, BoosterVersion } from '../../model/booster.model';
-import { Broadcaster } from 'ngx-base';
+import { BroadcastService } from '../../service/broadcast.service';
 import { Selection } from '../../model/selection.model';
 import {
   createViewMissions,
@@ -41,7 +41,7 @@ export class MissionRuntimeCreateappStepComponent extends LauncherStep implement
   constructor(@Host() public launcherComponent: LauncherComponent,
               private missionRuntimeService: MissionRuntimeService,
               public _DomSanitizer: DomSanitizer,
-              private broadcaster: Broadcaster) {
+              private broadcaster: BroadcastService) {
     super();
   }
 
@@ -53,7 +53,7 @@ export class MissionRuntimeCreateappStepComponent extends LauncherStep implement
         this.initBoosters();
         this.restoreFromSummary();
       }));
-    this.broadcaster.on('cluster').subscribe(() => this.initBoosters());
+    this.subscriptions.push(this.broadcaster.on('cluster').subscribe(() => this.initBoosters()));
   }
 
   ngOnDestroy() {
@@ -66,7 +66,6 @@ export class MissionRuntimeCreateappStepComponent extends LauncherStep implement
     this._runtimes = createViewRuntimes(this._boosters, this.launcherComponent.flow === 'launch');
     this._missions = createViewMissions(this._boosters);
     this.updateBoosterViewStatus();
-    this.initCompleted();
   }
 
 // Accessors
@@ -130,15 +129,14 @@ export class MissionRuntimeCreateappStepComponent extends LauncherStep implement
     this.clearMission();
     this.clearRuntime();
     this.updateBoosterViewStatus();
-    this.initCompleted();
   }
 
   selectBooster(mission?: ViewMission, runtime?: ViewRuntime, version?: BoosterVersion): void {
-    if (mission) {
+    if (mission && !mission.disabled) {
       this.missionId = mission.id;
       this.launcherComponent.summary.mission = mission;
     }
-    if (runtime) {
+    if (runtime && !runtime.disabled) {
       this.runtimeId = runtime.id;
       const newVersion =  version ? version : runtime.selectedVersion;
       this.versionId = newVersion.id;
@@ -207,6 +205,7 @@ export class MissionRuntimeCreateappStepComponent extends LauncherStep implement
       runtime.versions = versions;
       runtime.selectedVersion = this.getRuntimeSelectedVersion(runtime.id, versions);
     });
+    this.initCompleted();
   }
 
   private getRuntimeSelectedVersion(runtimeId: string, versions: BoosterVersion[]): BoosterVersion {
