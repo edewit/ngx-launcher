@@ -9,7 +9,7 @@ export function broadcast(event: string, properties: any): MethodDecorator {
 
         descriptor.value = function (...args: any[]) {
 
-            const broadcast: Broadcaster = StaticBroadcast.broadcaster;
+            const broadcast: Broadcaster = StaticInjector.getInjector().get(Broadcaster);
             if (!broadcast) {
               return originalMethod.apply(this, args);
             }
@@ -34,9 +34,13 @@ export function broadcast(event: string, properties: any): MethodDecorator {
     };
 }
 
-export class StaticBroadcast {
-  static broadcaster: Broadcaster = null;
-  constructor(@Optional() broadcaster: Broadcaster) {
-    StaticBroadcast.broadcaster = broadcaster;
+export class StaticInjector {
+  private static injector: Injector;
+  static setInjector(injector: Injector) {
+    StaticInjector.injector = injector;
+  }
+
+  static getInjector(): Injector {
+    return StaticInjector.injector;
   }
 }
