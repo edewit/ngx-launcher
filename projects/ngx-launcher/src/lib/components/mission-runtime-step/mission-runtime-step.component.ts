@@ -208,9 +208,10 @@ export class MissionRuntimeStepComponent extends LauncherStep implements OnInit,
     return _.first(versions);
   }
 
-  private clearRuntime(): void {
+  clearRuntime(): void {
     this.booster.runtime = { id: undefined, name: undefined,
       version: {id: undefined, name: undefined} };
+    this.updateBoosterViewStatus();
   }
 
   private clearMission(): void {
