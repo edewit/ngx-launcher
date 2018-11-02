@@ -21,9 +21,9 @@
 
     <div class="container-fluid container-cards-pf">
       <div class="card-pf row">
-        <div class="col-xs-12 col-md-6" *ngFor="let mission of (missions | sortArray: 'suggested': true | sortArray: 'shrinked': true)">
+        <div class="list-group-item col-xs-12 col-md-6" *ngFor="let mission of (missions | sortArray: 'suggested': true | sortArray: 'shrinked': true)" [class.disabled]="mission.disabled">
           <div (click)="selectBooster(mission)">
-            <div class="list-view-pf-checkbox">
+            <div class="checkbox">
               <input type="radio" name="mission" [disabled]="mission.disabled" [(ngModel)]="booster.mission.id" [value]="mission.id"
                 (ngModelChange)="selectBooster(mission)">
             </div>
