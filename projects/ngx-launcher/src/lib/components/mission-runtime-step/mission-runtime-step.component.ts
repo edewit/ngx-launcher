@@ -158,6 +158,12 @@ export class MissionRuntimeStepComponent extends LauncherStep implements OnInit,
     this.updateBoosterViewStatus();
   }
 
+  selectRuntime(runtime: ViewRuntime): void {
+    this.clearMission();
+    this.updateBoosterViewStatus();
+    this.selectBooster(null, runtime);
+  }
+
   private updateBoosterViewStatus(): void {
     const cluster = this.cluster;
     this._missions.forEach(mission => {

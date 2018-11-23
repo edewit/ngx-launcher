@@ -1,4 +1,4 @@
-<section id="MissionRuntime" class="f8launcher-section-mission-runtimes f8launcher-container_main--start"
+<section id="MissionRuntime" class="f8launcher-section-mission-runtime f8launcher-container_main--start"
          [ngClass]="{'hidden': hidden}" #section>
 
   <h1>{{title}}</h1>
@@ -11,7 +11,7 @@
           <button type="button" class="btn btn-secondary" [class.active]="!booster.runtime.id" (click)="clearRuntime()">
             Any
           </button>
-          <button type="button" class="btn btn-secondary" [class.active]="runtime.id === booster.runtime.id" (click)="selectBooster(null, runtime)"
+          <button type="button" class="btn btn-secondary" [class.active]="runtime.id === booster.runtime.id" (click)="selectRuntime(runtime)"
             *ngFor="let runtime of runtimes">
             {{runtime.name}}
           </button>
@@ -41,7 +41,7 @@
                 </button>
                 <ul class="dropdown-menu" role="menu" *dropdownMenu [attr.aria-labelledby]="mission.id + 'dropdown'">
                   <li *ngFor="let runtime of runtimes">
-                    <a href="javascript:void(0)" class="dropdown-item" role="menuitem" tabindex="-1" (click)="selectBooster(null, runtime)">
+                    <a href="javascript:void(0)" class="dropdown-item" role="menuitem" tabindex="-1" (click)="selectBooster(null, runtime)" *ngIf="!runtime.disabled">
                       {{runtime.name}}
                     </a>
                   </li>
